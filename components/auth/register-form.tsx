@@ -21,6 +21,8 @@ import { useState } from "react";
 import { RegisterSchema } from "@/types/register-schema";
 import { useAction } from "next-safe-action/hooks";
 import { emailRegister } from "@/server/actions/email-register";
+import { FormError } from "./form-error";
+import { FormSuccess } from "./form-success";
 
 function RegisterForm() {
   // Use Form me type schema add karna hota hai
@@ -41,8 +43,11 @@ function RegisterForm() {
 
   const { execute, status } = useAction(emailRegister, {
     onSuccess(data) {
+      if (data.error) {
+        setError(data.error);
+      }
       if (data.success) {
-        console.log(data.success);
+        setSuccess(data.success);
       }
     },
   });
@@ -120,6 +125,12 @@ function RegisterForm() {
                   </FormItem>
                 )}
               />
+
+              {/* From Success */}
+              <FormSuccess message={success} />
+
+              {/* Form Error */}
+              <FormError message={error} />
 
               {/* Forget Password */}
               <Button className="px-0" size={"sm"} variant={"link"} asChild>

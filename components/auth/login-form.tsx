@@ -17,6 +17,10 @@ import { LoginSchema } from "@/types/login-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { useAction } from "next-safe-action/hooks";
+import { emialSignIn } from "@/server/actions/email-signin";
+import { cn } from "@/lib/utils";
+
 function LoginForm() {
   // Use Form me type schema add karna hota hai
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -27,9 +31,12 @@ function LoginForm() {
     },
   });
 
+  //   next safe action use to get emailsignin Action
+  const { execute, status } = useAction(emialSignIn, {});
+
   //   ye form submit ke liye hai
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    console.log(values);
+    execute(values);
   };
 
   return (
@@ -93,7 +100,13 @@ function LoginForm() {
             </div>
 
             {/* Form Submit Button */}
-            <Button type="submit" className="w-full my-4">
+            <Button
+              type="submit"
+              className={cn(
+                "w-full my-4",
+                status === "executing" && "animate-pulse"
+              )}
+            >
               Login
             </Button>
           </form>

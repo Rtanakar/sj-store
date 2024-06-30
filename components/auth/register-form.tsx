@@ -19,6 +19,8 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { RegisterSchema } from "@/types/register-schema";
+import { useAction } from "next-safe-action/hooks";
+import { emailRegister } from "@/server/actions/email-register";
 
 function RegisterForm() {
   // Use Form me type schema add karna hota hai
@@ -37,9 +39,17 @@ function RegisterForm() {
   //   Success message show karne ke liye state
   const [success, setSuccess] = useState<string>("");
 
+  const { execute, status } = useAction(emailRegister, {
+    onSuccess(data) {
+      if (data.success) {
+        console.log(data.success);
+      }
+    },
+  });
+
   //   ye form submit ke liye hai
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    // execute(values);
+    execute(values);
   };
 
   return (

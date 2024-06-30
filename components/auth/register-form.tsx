@@ -13,20 +13,19 @@ import {
 import { Input } from "@/components/ui/input";
 import AuthCard from "./auth-card";
 import * as z from "zod";
-import { LoginSchema } from "@/types/login-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { useAction } from "next-safe-action/hooks";
-import { emialSignIn } from "@/server/actions/email-signin";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { RegisterSchema } from "@/types/register-schema";
 
-function LoginForm() {
+function RegisterForm() {
   // Use Form me type schema add karna hota hai
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     },
@@ -38,20 +37,16 @@ function LoginForm() {
   //   Success message show karne ke liye state
   const [success, setSuccess] = useState<string>("");
 
-  //   next safe action use to get emailsignin Action
-  const { execute, status } = useAction(emialSignIn, {});
-
   //   ye form submit ke liye hai
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    execute(values);
+  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
+    // execute(values);
   };
 
   return (
     <AuthCard
-      cardTitle="Welcome back!"
-      backButtonHref="/auth/register"
-      backButtonLabel="Create a new account"
-      showShocials
+      cardTitle="Create an account 🚀"
+      backButtonHref="/auth/login"
+      backButtonLabel="Already have an account? Login here."
     >
       <div>
         {/* Login Form */}
@@ -59,6 +54,22 @@ function LoginForm() {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div>
               {/* Email */}
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ram Ram" type="text" {...field} />
+                    </FormControl>
+                    <FormDescription />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Password */}
               <FormField
                 control={form.control}
                 name="email"
@@ -114,7 +125,7 @@ function LoginForm() {
                 status === "executing" && "animate-pulse"
               )}
             >
-              Login
+              Register
             </Button>
           </form>
         </Form>
@@ -123,4 +134,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default RegisterForm;

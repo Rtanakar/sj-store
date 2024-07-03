@@ -2,16 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -66,4 +56,8 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+[data-ut-element="button"][data-state="uploading"]::after {
+  @apply bg-primary/50;
 }

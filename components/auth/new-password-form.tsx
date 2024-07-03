@@ -18,23 +18,25 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { RegisterSchema } from "@/types/register-schema";
 import { useAction } from "next-safe-action/hooks";
-import { emailRegister } from "@/server/actions/email-register";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
+import { NewPasswordSchema } from "@/types/new-password-schema";
+import { newPassword } from "@/server/actions/new-password";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
-function RegisterForm() {
+function NewPasswordForm() {
   // Use Form me type schema add karna hota hai
-  const form = useForm<z.infer<typeof RegisterSchema>>({
-    resolver: zodResolver(RegisterSchema),
+  const form = useForm<z.infer<typeof NewPasswordSchema>>({
+    resolver: zodResolver(NewPasswordSchema),
     defaultValues: {
-      name: "",
-      email: "",
       password: "",
     },
   });
+
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
   //   Error message show karne ke liye state
   const [error, setError] = useState<string>("");
@@ -42,7 +44,7 @@ function RegisterForm() {
   //   Success message show karne ke liye state
   const [success, setSuccess] = useState<string>("");
 
-  const { execute, status } = useAction(emailRegister, {
+  const { execute, status } = useAction(newPassword, {
     onSuccess(data) {
       if (data?.error) {
         setError(data.error);
@@ -56,58 +58,21 @@ function RegisterForm() {
   });
 
   //   ye form submit ke liye hai
-  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    execute(values);
+  const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
+    execute({ password: values.password, token });
   };
 
   return (
     <AuthCard
-      cardTitle="Create an account 🚀"
+      cardTitle="Enter a new password"
       backButtonHref="/auth/login"
-      backButtonLabel="Already have an account? Login here."
+      backButtonLabel="Back to login"
     >
       <div>
         {/* Login Form */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div>
-              {/* Name */}
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ram Ram" type="text" {...field} />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Email */}
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="sjstore@gmail.com"
-                        type="email"
-                        autoComplete="email"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               {/* Password */}
               <FormField
                 control={form.control}
@@ -120,6 +85,7 @@ function RegisterForm() {
                         placeholder="************"
                         type="password"
                         autoComplete="current-password"
+                        disabled={status === "executing"}
                         {...field}
                       />
                     </FormControl>
@@ -149,7 +115,7 @@ function RegisterForm() {
                 status === "executing" && "animate-pulse"
               )}
             >
-              Register
+              Reset Password
             </Button>
           </form>
         </Form>
@@ -158,4 +124,4 @@ function RegisterForm() {
   );
 }
 
-export default RegisterForm;
+export default NewPasswordForm;

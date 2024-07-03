@@ -15,6 +15,13 @@
       "when": 1719739022262,
       "tag": "0001_narrow_true_believers",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1719761274388,
+      "tag": "0002_bizarre_moonstone",
+      "breakpoints": true
     }
   ]
 }

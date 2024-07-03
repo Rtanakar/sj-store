@@ -24,7 +24,7 @@ function AuthCard({
   showShocials,
 }: CardWrapperProps) {
   return (
-    <Card>
+    <Card className="max-w-xl mx-auto">
       <CardHeader>
         <CardTitle>{cardTitle}</CardTitle>
       </CardHeader>
